@@ -1,26 +1,31 @@
 // src/utils/localStorageHelpers.js
 
+import { blogs as dummyBlogs } from "../Utils/dummyData";
+
 const BLOGS_KEY = "blogs";
 
-// Fetch blogs from localStorage
-export const getBlogs = () => {
-  const storedBlogs = localStorage.getItem(BLOGS_KEY);
-  return storedBlogs ? JSON.parse(storedBlogs) : [];
+// Initialize blogs from dummyData if localStorage is empty
+const ensureInitialized = () => {
+  if (!localStorage.getItem(BLOGS_KEY)) {
+    localStorage.setItem(BLOGS_KEY, JSON.stringify(dummyBlogs));
+  }
 };
 
-// Save entire blogs array to localStorage
+export const getBlogs = () => {
+  ensureInitialized();
+  return JSON.parse(localStorage.getItem(BLOGS_KEY));
+};
+
 export const saveBlogs = (blogs) => {
   localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
 };
 
-// Add a new blog
 export const addBlog = (newBlog) => {
   const blogs = getBlogs();
   blogs.push(newBlog);
   saveBlogs(blogs);
 };
 
-// Update an existing blog by id
 export const updateBlog = (updatedBlog) => {
   const blogs = getBlogs();
   const updated = blogs.map((blog) =>
@@ -29,7 +34,7 @@ export const updateBlog = (updatedBlog) => {
   saveBlogs(updated);
 };
 
-// Delete a blog by id
+
 export const deleteBlog = (id) => {
   const blogs = getBlogs();
   const filtered = blogs.filter((blog) => blog.id !== id);

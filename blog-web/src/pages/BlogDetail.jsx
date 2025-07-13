@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { blogs, users, currentUserId } from "../Utils/dummyData";
+import { useParams, Link } from "react-router-dom";
+import { blogs as dummyBlogs, users, currentUserId } from "../Utils/dummyData";
+import { getBlogs, updateBlog } from "../Utils/localStorageHelpers";
 import { FaRegHeart, FaHeart, FaRegBookmark, FaBookmark, FaEllipsisV } from "react-icons/fa";
-
+console.log(dummyBlogs);
 function BlogDetail() {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
@@ -16,22 +17,13 @@ function BlogDetail() {
     category: "",
     keywords: "",
   });
+useEffect(() => {
+  const allBlogs = getBlogs();
+  const fallback = allBlogs.length > 0 ? allBlogs : dummyBlogs;
+  const found = fallback.find((b) => b.id === id);
+  setBlog(found);
+}, [id]);
 
-  useEffect(() => {
-    const foundBlog = blogs.find((b) => b.id === id);
-    setBlog(foundBlog);
-
-    if (foundBlog) {
-      const storedLikes = JSON.parse(localStorage.getItem("likes")) || {};
-      const storedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
-
-      const isLiked = storedLikes[id]?.includes(currentUserId) || foundBlog.likes.includes(currentUserId);
-      const isBookmarked = storedBookmarks[id]?.includes(currentUserId) || foundBlog.bookmarks.includes(currentUserId);
-
-      setLiked(isLiked);
-      setBookmarked(isBookmarked);
-    }
-  }, [id]);
 
   const toggleLike = () => {
     const storedLikes = JSON.parse(localStorage.getItem("likes")) || {};
@@ -73,27 +65,21 @@ function BlogDetail() {
   };
 
   const handleSave = () => {
-    // Update the blog in your data structure
-    const updatedBlog = {
-      ...blog,
-      title: editData.title,
-      content: editData.content,
-      category: editData.category,
-      keywords: editData.keywords.split(',').map(k => k.trim()).filter(k => k),
-    };
-
-    // Update the blog state
-    setBlog(updatedBlog);
-    
-    // Here you would typically save to your backend/database
-    // For now, you could update localStorage or your dummy data
-    const blogIndex = blogs.findIndex(b => b.id === id);
-    if (blogIndex !== -1) {
-      blogs[blogIndex] = updatedBlog;
-    }
-
-    setIsEditing(false);
+  const updatedBlog = {
+    ...blog,
+    title: editData.title,
+    content: editData.content,
+    category: editData.category,
+    keywords: editData.keywords.split(',').map(k => k.trim()).filter(k => k),
   };
+
+  updateBlog(updatedBlog); // ✅ Save it to localStorage
+  setBlog(updatedBlog); // ✅ Update state
+  setIsEditing(false); // ✅ Exit editing mode
+};
+
+
+
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -110,15 +96,24 @@ function BlogDetail() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10 text-white">
+    <main className="relative z-0 max-w-4xl mx-auto px-4 py-10 text-white">
+
       {!isEditing ? (
         // Display Mode
         <>
           <h1 className="text-3xl font-semibold mb-4">{blog.title}</h1>
-          <p className="text-sm text-gray-500 mb-2">
-            By {getAuthorName(blog.authorId)} on{" "}
-            {new Date(blog.createdAt).toLocaleDateString()}
-          </p>
+<p className="text-sm text-gray-500 mb-2">
+  By{" "}
+  <Link
+    to={`/author/${blog.authorId}`}
+    className="text-blue-400 underline hover:text-blue-300"
+  >
+    {getAuthorName(blog.authorId)}
+  </Link>{" "}
+  on {new Date(blog.createdAt).toLocaleDateString()}
+</p>
+
+
 
           {/* Blog content box */}
           <div className="border border-gray-500 p-6 rounded-2xl mt-6 relative">
@@ -141,7 +136,8 @@ function BlogDetail() {
                         title: blog.title,
                         content: blog.content,
                         category: blog.category,
-                        keywords: blog.keywords.join(", "),
+                        keywords: Array.isArray(blog.keywords) ? blog.keywords.join(", ") : "",
+
                       });
                       setIsEditing(true);
                     }}

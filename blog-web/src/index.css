@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
+
+
+
 body {
+  
   background-color: black;
-  color: white; /* Optional: to make text readable */
   margin: 0;
   padding: 0;
   
