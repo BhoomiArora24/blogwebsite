@@ -72,7 +72,7 @@ function NavBar() {
         <Link
   to="/create"
   >
-<div className="z-50 border-white rounded-full text-center items-center flex justify-center gap-2 hover:bg-pink-600 h-12">
+<div className="z-50 border-white rounded-full text-center items-center flex justify-center gap-2 hover:bg-[#1AA1F2] h-12">
   {/* Icon and label */}
   <FaEdit className="text-sm relative z-10" />
   <span className="relative z-10">Create Post</span>

@@ -166,7 +166,7 @@ useEffect(() => {
               <div className="flex flex-col items-center">
                 <span
                   onClick={toggleLike}
-                  className={`cursor-pointer ${liked ? "text-red-500" : "text-gray-400"}`}
+                  className={`cursor-pointer ${liked ? "text-pink-600" : "text-gray-400"}`}
                   title="Like"
                 >
                   {liked ? <FaHeart /> : <FaRegHeart />}
@@ -180,7 +180,7 @@ useEffect(() => {
               <div className="flex flex-col items-center">
                 <span
                   onClick={toggleBookmark}
-                  className={`cursor-pointer ${bookmarked ? "text-yellow-400" : "text-gray-400"}`}
+                  className={`cursor-pointer ${bookmarked ? "text-[#1AA1F2]" : "text-gray-400"}`}
                   title="Bookmark"
                 >
                   {bookmarked ? <FaBookmark /> : <FaRegBookmark />}
