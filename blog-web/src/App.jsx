@@ -4,14 +4,12 @@ import BlogDetail from "../src/pages/BlogDetail";
 import NavBar from "../src/Components/Navbar"; // ✅ Import your sidebar
 import CreateBlog from "./pages/createPost";
 import AuthorProfile from "./pages/AuthorProfile";
-import { BrowserRouter } from 'react-router-dom';
-
 
 
 
 function App() {
   return (
-    <BrowserRouter basename="/blogwebsite">
+    <Router basename="/blogwebsite">
       <div className="flex min-h-screen  text-white">
         <NavBar />
         <div className="flex-1">
@@ -23,7 +21,7 @@ function App() {
           </Routes>
         </div>
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
 
